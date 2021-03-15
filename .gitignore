@@ -1,0 +1,7 @@
+cscope.out
+tags
+bin/*
+CMakeFiles/*
+build/*
+.vscode/*
+.vscode-ctags
