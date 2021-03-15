@@ -37,7 +37,7 @@ int32_t *seqstk_stk_pop(VM_Stack * const stk)
 {
    int32_t * const top = seqstk_stk_peek(stk);
    if(top)
-      stk->top -= SEQSTK_STACK_EMPTY;
+      stk->top -= 1;
    return top;
 }
 

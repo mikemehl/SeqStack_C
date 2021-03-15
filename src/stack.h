@@ -24,6 +24,9 @@ bool seqstk_stk_push(VM_Stack * const stk, int32_t val);
 // Peek at the value on top of the stack. Returns a pointer to the value on success, NULL otherwise.
 int32_t * seqstk_stk_peek(VM_Stack * const stk);
 
+// Pop the value on top of the stack. Returns a pointer to the value if a top value existed. Otherwise, NULL.
+int32_t *seqstk_stk_pop(VM_Stack * const stk);
+
 // Check if the stack is empty.
 bool seqstk_stk_empty(VM_Stack const * const stk);
 
