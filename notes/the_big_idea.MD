@@ -4,7 +4,7 @@ Alright....a stack machine....but it's only output is through....OTHER STACKS.
 
 Specifically, 8 "ports", each holding 8 "stacks" with limited entries.
 
-All values are 16.8 bit fixed point.
+All values are 16.16 bit fixed point.
 
 Originally thought to use for making weird musical sequences....but....let's just focus on making a quirky stack machine.
 
