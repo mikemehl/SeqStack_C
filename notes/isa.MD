@@ -1,55 +1,69 @@
 # SeqStack ISA
 
-Memory is 2^16 - 1 bytes, byte addressable.
+## Memory and Number Encoding
 
-All values are two's complement 16.16 bit fixed point.
+Memory is 2^16, byte addressable.
 
-Instructions are a byte each.
+All values are two's complement 16.16 bit fixed point. When an instruction utilizes the stack for adresses, the fractional portion (the bottom 16 bits) are ignored.
 
-The 3 most significant bits determine the operation type, and how to interpret the rest of the instruction.
+## Instruction Format
 
-Operations:
+Instructions are a byte each. The 3 most significant bits determine the instruction type, and how to interpret the rest of the instruction. Generally, the next n bits determine the specific instruction, with the remaining bits determining the adressing mode or other parameters. Operations do not generally support all adressing modes. See the list of all operations below.
+
+## Adressing Modes
+
+Where supported, addressing modes are represented by two bits in the instruction byte.
+* 11 - Immediate (Read value from next 2-4 bytes in memory)
+* 10 - Index Stack (Read value from next 2 bytes in memory, treat as memory address, use stack top as offset from that address)
+* 01 - Index Immediate
+* 00 - Stack (Read value from top of stack)
+
+## Instruction List and Format
+
 * 111 - Stack Manipulation
-  * Push
-  * Pop
-  * Drop
-  * Dup
-  * Rot
-  * MovToRts
-  * MovFromRts
+  * Adressing Modes: Immediate, Index Stack, Index Immediate, Stack.
+  * 111 - Push
+  * 110 - Pop
+  * 101 - Drop
+  * 100 - Dup
+  * 011 - Rot
+  * 010 - MovToRts
+  * 001 - MovFromRts
 * 110 - Arithmetic
-  * Add
-  * Sub
-  * Mul
-  * Div
+  * Adressing Modes: Stack only.
+  * 11 - Add
+  * 10 - Sub
+  * 01 - Mul
+  * 00 - Div
 * 101 - Bit Manipulation
-  * Shl
-  * Shr
-  * Rol
-  * Ror
-  * And
-  * Or
-  * Xor
-  * Not
+  * Adressing Modes: Stack only.
+  * 111 - Shl
+  * 110 - Shr
+  * 101 - Rol
+  * 100 - Ror
+  * 011 - And
+  * 010 - Or
+  * 001 - Xor
+  * 000 - Not
 * 100 - Port Ops
-  * PortPush
-  * PortPop
-  * PortClear
+  * Adressing Modes: Stack only. The remaining three bits determine which port the operation corresponds to.
+  * 11 - PortPush
+  * 10 - PortPop
+  * 01 - PortGet
+  * 00 - PortClear
 * 011 - Control Flow
-  * JMP
-  * CALL
-  * RET
-  * BEQ
-  * BNEQ
-  * BGT
-  * BLT
+  * Adressing Modes: Immediate, Index Stack, Index Immediate, Stack. For comparison instructions, the top two values on the stack are compared. If the instruction jumps, the third value on the stack is used (if that adressing mode uses the stack).
+  * 111 - JMP
+  * 110 - CALL
+  * 101 - RET
+  * 100 - BEQ
+  * 011 - BNEQ
+  * 010 - BGT
+  * 001 - BLT
 * 010 - Interrupt
   * SETI - set interrupt (one for each port??)
 * 001 - Misc.
-  * NOP
-  * BRK - stop
-
-Adressing Modes:
-* 11 - Immediate (Read value from next 2-4 bytes in memory)
-* 10 - Index (Read value from next 2 bytes in memory, treat as memory address, use stack top as offset from that address)
-* 01 - Stack based (Read value from top of stack)
+  * 1 - BRK 
+    * Stop execution.
+  * 0 - NOP
+    * Do nothing.
