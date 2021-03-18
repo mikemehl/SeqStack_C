@@ -1,7 +1,9 @@
-#ifndef _SEQSTK_NUM_H_
-#define _SEQSTK_NUM_H_
+#ifndef _SEQSTK_VAL_H_
+#define _SEQSTK_VAL_H_
 
 #include <stdint.h>
+
+extern const float SEQSTK_FRAC_LSB;
 
 typedef union Val_t
 {

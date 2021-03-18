@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include "stack.h"
+#include "seqstk_stack.h"
 
 
 // Initialize the passed in stack.
