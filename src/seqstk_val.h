@@ -16,4 +16,6 @@ typedef union Val_t
     char bytes[4];
 } Val_t;
 
+Val_t seqstk_val_add(const Val_t a, const Val_t b);
+Val_t seqstk_val_sub(const Val_t a, const Val_t b);
 #endif
