@@ -13,6 +13,7 @@ Instructions are a byte each. The 3 most significant bits determine the instruct
 ## Adressing Modes
 
 Where supported, addressing modes are represented by two bits in the instruction byte.
+
 * 11 - Immediate (Read value from next 2-4 bytes in memory)
 * 10 - Index Stack (Read value from next 2 bytes in memory, treat as memory address, use stack top as offset from that address)
 * 01 - Index Immediate
@@ -63,7 +64,7 @@ Where supported, addressing modes are represented by two bits in the instruction
 * 010 - Interrupt
   * SETI - set interrupt (one for each port??)
 * 001 - Misc.
-  * 1 - BRK 
+  * 1 - BRK
     * Stop execution.
   * 0 - NOP
     * Do nothing.
