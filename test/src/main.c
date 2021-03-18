@@ -24,33 +24,42 @@ test_return_type stack_test()
    bool is_empty = seqstk_stk_empty(&stk);
    test_assert((is_empty), "EMPTY TEST FAILED!");
 
-   int32_t const * const empty_ret = seqstk_stk_peek(&stk);
+   Val_t const * const empty_ret = seqstk_stk_peek(&stk);
    test_assert((empty_ret == NULL), "PEEK RETURNED A VALUE FROM EMPTY STACK!");
 
-   test_assert(seqstk_stk_push(&stk, 4), "PUSH FAILED!");
-   test_assert(seqstk_stk_push(&stk, 5), "PUSH FAILED!");
-   test_assert(seqstk_stk_push(&stk, 6), "PUSH FAILED!");
-   test_assert((stk.data[stk.top] == 6), "STACK PUSH FAILED! TOP ITEM INCORRECT!");
-   test_assert((stk.data[stk.top - 1] == 5), "STACK PUSH FAILED! SECOND ITEM INCORRECT!");
+   Val_t four = {.full = 4};
+   Val_t five = {.full = 5};
+   Val_t six = {.full = 6};
+   test_assert(seqstk_stk_push(&stk, four), "PUSH FAILED!");
+   test_assert(seqstk_stk_push(&stk, five), "PUSH FAILED!");
+   test_assert(seqstk_stk_push(&stk, six), "PUSH FAILED!");
+   test_assert((stk.data[stk.top].full == six.full), "STACK PUSH FAILED! TOP ITEM INCORRECT!");
+   test_assert((stk.data[stk.top - 1].full == five.full), "STACK PUSH FAILED! SECOND ITEM INCORRECT!");
    
    is_empty = seqstk_stk_empty(&stk);
    test_assert(!is_empty, "EMPTY FAILED! STACK HAS VALUES BUT REPORTED EMPTY!");
 
-   int32_t *pop_ret = seqstk_stk_pop(&stk);
+   Val_t *pop_ret = seqstk_stk_pop(&stk);
    test_assert(pop_ret != NULL, "POP RETURNED NULL!");
-   test_assert(*pop_ret == 6, "POPPED WRONG VALUE, NOT 6!!!");
+   test_assert(pop_ret->full == 6, "POPPED WRONG VALUE, NOT 6!!!");
    pop_ret = seqstk_stk_pop(&stk);
    test_assert(pop_ret != NULL, "POP RETURNED NULL!");
-   test_assert(*pop_ret == 5, "POPPED WRONG VALUE, NOT 5!!!");
+   test_assert(pop_ret->full == 5, "POPPED WRONG VALUE, NOT 5!!!");
    pop_ret = seqstk_stk_pop(&stk);
    test_assert(pop_ret != NULL, "POP RETURNED NULL!");
-   test_assert(*pop_ret == 4, "POPPED WRONG VALUE, NOT 4!!!");
+   test_assert(pop_ret->full == 4, "POPPED WRONG VALUE, NOT 4!!!");
    pop_ret = seqstk_stk_pop(&stk);
    test_assert(pop_ret == NULL, "POP RETURNED NONNULL ON EMPTY STACK!");
 
-   // Test for trying to push to a full stack (should fail).
-   stk.top = STACK_SIZE;
-   test_assert(!seqstk_stk_push(&stk, 666), "STACK OVERFLOW NOT CHECKED!");
+   // Test for trying to push to a full stack.
+   static char test_msg[128];
+   Val_t devil = {.full = 666};
+   for(int i=0; i<STACK_SIZE; i++)
+   {
+      sprintf(test_msg, "STACK PUSH FAILED ON ITERATION %d", i);
+      test_assert(seqstk_stk_push(&stk, devil), test_msg);
+   }
+   test_assert(!seqstk_stk_push(&stk, devil), "STACK OVERFLOW NOT CHECKED!");
 
    // Reinitialize.
    seqstk_stk_init(&stk);
