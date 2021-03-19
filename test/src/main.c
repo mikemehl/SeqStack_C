@@ -1,5 +1,6 @@
 #include <math.h>
 #include "seqstk_stack.h"
+#include "seqstk_fixed.h"
 #include "test.h"
 
 
@@ -21,23 +22,33 @@ int main(void)
 test_return_type arithmetic_test()
 {
    const float epsilon = SEQSTK_FRAC_LSB;
+   const float muldiv_epsilon = 3.30 * epsilon; // TODO: Can we get this more precise?
    const float zero = 0.0;
    const float one = 1.0;
+   const int32_t fixed_one = (1 << 16);
    const float a = 5.67;
    const int32_t fixed_a = 371589;
    const float b = 3.29;
    const int32_t fixed_b = 215613;
    const float c = -4.25;
    const int32_t fixed_c = -278528;
+   const float a_times_b = a*b;
+   const float a_times_c = a*c;
+   const float c_times_c = c*c;
+   const float a_div_b = a/b;
+   const float a_div_c = a/c;
+   const float c_div_c = c/c;
    float fout = 0.0;
    int32_t iout = 0;
+//   int32_t iprod_out = 0;
 
+   // Conversions
    iout = seqstk_float_to_fixed(zero);
    test_assert(iout == 0, "Float -> Fixed failed on zero!");
    fout = seqstk_fixed_to_float(iout);
    test_assert(fout == 0.0, "Fixed -> Float failed on zero!");
    iout = seqstk_float_to_fixed(one);
-   test_assert(iout == 1 << 16, "Float -> Fixed failed on one!");
+   test_assert(iout == fixed_one, "Float -> Fixed failed on one!");
    fout = seqstk_fixed_to_float(iout);
    test_assert(fout == 1.0, "Fixed -> Float failed on one!");
    iout = seqstk_float_to_fixed(a);
@@ -53,6 +64,61 @@ test_return_type arithmetic_test()
    fout = seqstk_fixed_to_float(iout);
    test_assert(fabs(fout - c) <= epsilon, "Fixed -> Float failed on -4.25!");
 
+   // Multiplication
+   int32_t x = 0;
+   int32_t y = 0;
+   x = seqstk_float_to_fixed(zero);
+   y = seqstk_float_to_fixed(zero);
+   iout = seqstk_fixed_mul(x, y);
+   test_assert(iout == 0, "Fixed mul failed: 0*0 != 0");
+   x = seqstk_float_to_fixed(one);
+   iout = seqstk_fixed_mul(x, y);
+   test_assert(iout == 0, "Fixed mul failed: 1*0 != 0");
+   y = seqstk_float_to_fixed(one);
+   iout = seqstk_fixed_mul(x, y);
+   test_assert(iout == fixed_one, "Fixed mul failed: 1*1 != 1");
+   x = seqstk_float_to_fixed(a);
+   y = seqstk_float_to_fixed(b);
+   iout = seqstk_fixed_mul(x, y);
+   fout = seqstk_fixed_to_float(iout);
+   test_assert(fabs(fout - a_times_b) < muldiv_epsilon, "Fixed mul failed: 5.67*3.29");
+   x = seqstk_float_to_fixed(a);
+   y = seqstk_float_to_fixed(c);
+   iout = seqstk_fixed_mul(x, y);
+   fout = seqstk_fixed_to_float(iout);
+   test_assert(fabs(fout - a_times_c) < muldiv_epsilon, "Fixed mul failed: 5.67*-4.25");
+   x = seqstk_float_to_fixed(c);
+   y = seqstk_float_to_fixed(c);
+   iout = seqstk_fixed_mul(x, y);
+   fout = seqstk_fixed_to_float(iout);
+   test_assert(fabs(fout - c_times_c) < muldiv_epsilon, "Fixed mul failed: -4.25*-4.25");
+
+   // Division
+   x = seqstk_float_to_fixed(zero);
+   y = seqstk_float_to_fixed(zero);
+   iout = seqstk_fixed_div(x, y);
+   test_assert(iout == 0, "Fixed div failed: 0/0 != 0");
+   x = seqstk_float_to_fixed(one);
+   iout = seqstk_fixed_div(y, x);
+   test_assert(iout == 0, "Fixed div failed: 0/1 != 0");
+   y = seqstk_float_to_fixed(one);
+   iout = seqstk_fixed_div(x, y);
+   test_assert(iout == fixed_one, "Fixed div failed: 1/1 != 1");
+   x = seqstk_float_to_fixed(a);
+   y = seqstk_float_to_fixed(b);
+   iout = seqstk_fixed_div(x, y);
+   fout = seqstk_fixed_to_float(iout);
+   test_assert(fabs(fout - a_div_b) < muldiv_epsilon, "Fixed div failed: 5.67/3.29");
+   x = seqstk_float_to_fixed(a);
+   y = seqstk_float_to_fixed(c);
+   iout = seqstk_fixed_div(x, y);
+   fout = seqstk_fixed_to_float(iout);
+   test_assert(fabs(fout - a_div_c) < muldiv_epsilon, "Fixed div failed: 5.67/-4.25");
+   x = seqstk_float_to_fixed(c);
+   y = seqstk_float_to_fixed(c);
+   iout = seqstk_fixed_div(x, y);
+   fout = seqstk_fixed_to_float(iout);
+   test_assert(fabs(fout - c_div_c) < muldiv_epsilon, "Fixed mul failed: -4.25/-4.25");
 
    return_test_success;
 }

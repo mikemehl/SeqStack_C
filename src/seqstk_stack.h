@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "seqstk_val.h"
 
 #define STACK_SIZE ((1 << 16) -1)
 #define SEQSTK_STACK_EMPTY -1
