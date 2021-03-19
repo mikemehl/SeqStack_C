@@ -11,7 +11,7 @@
 // The stack data structure.
 typedef struct
 {
-   Val_t data[STACK_SIZE]; 
+   int32_t data[STACK_SIZE]; 
    int top;
 } VM_Stack;
 
@@ -20,13 +20,13 @@ typedef struct
 void seqstk_stk_init(VM_Stack * const stk);
 
 // Push a value on to the stack. Returns true on success, false otherwise.
-bool seqstk_stk_push(VM_Stack * const stk, Val_t val);
+bool seqstk_stk_push(VM_Stack * const stk, int32_t val);
 
 // Peek at the value on top of the stack. Returns a pointer to the value on success, NULL otherwise.
-Val_t * seqstk_stk_peek(VM_Stack * const stk);
+int32_t * seqstk_stk_peek(VM_Stack * const stk);
 
 // Pop the value on top of the stack. Returns a pointer to the value if a top value existed. Otherwise, NULL.
-Val_t *seqstk_stk_pop(VM_Stack * const stk);
+int32_t *seqstk_stk_pop(VM_Stack * const stk);
 
 // Check if the stack is empty.
 bool seqstk_stk_empty(VM_Stack const * const stk);

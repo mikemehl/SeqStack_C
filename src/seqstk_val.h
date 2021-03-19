@@ -5,17 +5,6 @@
 
 extern const float SEQSTK_FRAC_LSB;
 
-typedef union Val_t
-{
-    int32_t full;
-    struct 
-    {
-        int16_t whole;
-        uint16_t frac;
-    } fp;
-    char bytes[4];
-} Val_t;
-
-Val_t seqstk_val_add(const Val_t a, const Val_t b);
-Val_t seqstk_val_sub(const Val_t a, const Val_t b);
+int32_t seqstk_float_to_fixed(const float a);
+float seqstk_fixed_to_float(const int32_t a);
 #endif

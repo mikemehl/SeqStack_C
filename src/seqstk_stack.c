@@ -9,7 +9,7 @@ void seqstk_stk_init(VM_Stack * const stk)
 }
 
 // Push a value to the passed in stack.
-bool seqstk_stk_push(VM_Stack * const stk, Val_t val)
+bool seqstk_stk_push(VM_Stack * const stk, int32_t val)
 {
    if(stk->top == SEQSTK_STACK_EMPTY)
    {
@@ -26,16 +26,16 @@ bool seqstk_stk_push(VM_Stack * const stk, Val_t val)
    return false;
 }
 
-Val_t *seqstk_stk_peek(VM_Stack * const stk)
+int32_t *seqstk_stk_peek(VM_Stack * const stk)
 {
    if(stk->top > SEQSTK_STACK_EMPTY)
       return &(stk->data[stk->top]);
    return NULL;
 }
 
-Val_t *seqstk_stk_pop(VM_Stack * const stk)
+int32_t *seqstk_stk_pop(VM_Stack * const stk)
 {
-   Val_t * const top = seqstk_stk_peek(stk);
+   int32_t * const top = seqstk_stk_peek(stk);
    if(top)
       stk->top -= 1;
    return top;

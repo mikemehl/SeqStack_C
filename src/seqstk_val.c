@@ -1,23 +1,15 @@
 #include "seqstk_val.h"
 
-const float SEQSTK_FRAC_LSB = (1 / (1 << 16));
+const float SEQSTK_FRAC_LSB = (1.0 / (1 << 16));
 
 // TODO: Fixed to float and vice versa, etc.
 
-Val_t seqstk_val_add(const Val_t a, const Val_t b)
+int32_t seqstk_float_to_fixed(const float a)
 {
-    Val_t out;
-    out.fp.whole = a.fp.whole + b.fp.whole;
-    // TODO: What if one of the values is negative? 
-    //       Then you gotta handle the fraction differently, wehhhhhhhh.
-    out.fp.frac = a.fp.frac + b.fp.frac;
-    return out;
+    return  a / SEQSTK_FRAC_LSB;
 }
 
-Val_t seqstk_val_sub(const Val_t a, const Val_t b)
+float seqstk_fixed_to_float(const int32_t a)
 {
-    Val_t out;
-    out.fp.whole = a.fp.whole - b.fp.whole;
-    out.fp.frac = a.fp.frac - b.fp.frac;
-    return out;
+    return a * SEQSTK_FRAC_LSB; 
 }
