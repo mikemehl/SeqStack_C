@@ -68,12 +68,30 @@ test_return_type stack_op_tests()
    SeqStkVm vm;
    test_assert(seqstk_init(&vm), "Init failed????");
 
+   const int32_t test_val = seqstk_float_to_fixed(1234.5678);
+
+   // TODO: More tests? Edge cases?
    char code[RAM_SIZE] = {0};
    code[0] = PUSH_IMM;
-   *((int32_t * const) &code[1]) = seqstk_float_to_fixed(1234.5678);
+   *((int32_t * const) &code[1]) = test_val;
    test_assert(seqstk_load_program(&vm, code, 5), "UNABLE TO LOAD TEST PROGRAM FOR PUSH");
    test_assert(seqstk_cycle(&vm), "PUSH IMM FAILED");
-   test_assert(*seqstk_stk_peek(&vm.data_stack) == *((int32_t * const)&code[1]), "WRONG VALUE ON DATA STACK");
+   test_assert(*seqstk_stk_peek(&vm.data_stack) == test_val, "WRONG VALUE ON DATA STACK AFTER PUSH IMM");
+
+   // TODO: More tests? Edge cases?
+   test_assert(seqstk_init(&vm), "INIT FAILED FOR PUSH INDEX TEST");
+   code[0] = PUSH_INDEX_STACK;
+   const int16_t imm_val = 8;
+   const int32_t offset_val = 6;
+   const int32_t offset_val_fp = seqstk_float_to_fixed(6.0);
+   *((int16_t * const) &code[1]) = imm_val;
+   *((int32_t * const)&code[imm_val + offset_val]) = test_val;
+   seqstk_stk_push(&vm.data_stack, offset_val_fp);
+   test_assert(seqstk_load_program(&vm, code, RAM_SIZE), "UNABLE TO LOAD TEST PROGRAM FOR PUSH");
+   test_assert(seqstk_cycle(&vm), "PUSH INDEX STACK FAILED");
+   test_assert(*seqstk_stk_peek(&vm.data_stack) == test_val, "WRONG VALUE ON DATA STACK AFTER PUSH INDEX STACK");
+
+
    // TODO: The rest.
 
 

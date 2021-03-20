@@ -7,7 +7,8 @@ extern const uint8_t ADDR_MASK;
 
 typedef enum SeqStkOp
 {
-   PUSH_IMM = 0b11111111 
+   PUSH_IMM         = 0b11111111,
+   PUSH_INDEX_STACK = 0b11111110
 } SeqStkOp;
 
 typedef enum SeqStkOpGroup
@@ -17,7 +18,9 @@ typedef enum SeqStkOpGroup
 
 typedef enum SeqStkAddrMode
 {
-   ADDR_IMM = 0b00000011 
+   ADDR_IMM = 0b00000011,
+   ADDR_INDEX_STACK = 0b00000010,
+   ADDR_INDEX_IMM = 0b00000001
 } SeqStkAddrMode;
 
 #endif
