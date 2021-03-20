@@ -18,6 +18,7 @@ typedef struct SeqStkVm
     int32_t      interrupts[NUM_INTERRUPTS];
 } SeqStkVm;
 
-void seqstk_init(SeqStkVm * const vm);
+bool seqstk_init(SeqStkVm * const vm);
+bool seqstk_load_program(SeqStkVm * const vm, char const * const prog, const int32_t size);
 
 #endif

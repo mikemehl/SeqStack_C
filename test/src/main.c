@@ -30,7 +30,8 @@ test_return_type vm_init_tests()
    static char msg[256];
 
    // Initialize the vm.
-   seqstk_init(&vm);
+   test_assert(!seqstk_init(NULL), "VM NULL INIT FAILED");
+   test_assert(seqstk_init(&vm), "VM INIT FAILED");
    test_assert(vm.pc == 0, "PC NOT INITIALIZED TO 0");
    test_assert(seqstk_stk_empty(&vm.call_stack), "CALL STACK NOT EMPTIED");
    test_assert(seqstk_stk_empty(&vm.data_stack), "CALL STACK NOT EMPTIED");
@@ -44,14 +45,28 @@ test_return_type vm_init_tests()
       sprintf(msg, "INTERRUPT %d NOT INVALID", i);
       test_assert(vm.interrupts[i] == INVALID_INTERRUPT, msg);
    }
+
+   const char code[RAM_SIZE] = { 0 };
+   *((int32_t * const)&code[0]) = seqstk_float_to_fixed(1234.5678);
+   test_assert(seqstk_load_program(&vm, code, RAM_SIZE), "LOAD CODE FAILED");
+   for(unsigned int i=0; i<sizeof(int32_t); i++)
+      test_assert(vm.ram[i] !=0, "FAILED TO LOAD CODE");
+   
+   test_assert(!seqstk_load_program(&vm, NULL, RAM_SIZE), "NULL CODE INIT FAILED");
+   test_assert(!seqstk_load_program(NULL, code, RAM_SIZE), "NULL VM INIT FAILED");
+   test_assert(!seqstk_load_program(&vm, code, 0), "0 SIZE INIT FAILED");
+   test_assert(!seqstk_load_program(&vm, code, -666), "NEGATIVE SIZE INIT FAILED");
    
    return_test_success;
 }
 
 test_return_type stack_op_tests()
 {
+   //static char code[RAM_SIZE];
+   SeqStkVm vm;
+   test_assert(seqstk_init(&vm), "Init failed????");
 
-   // TODO
+   // TODO: Try loading in some code with the different stack opcodes..did it work?
 
    return_test_success;
 }
@@ -163,11 +178,13 @@ test_return_type arithmetic_test()
 test_return_type stack_test()
 {
    VM_Stack stk;
-   seqstk_stk_init(&stk);
+   test_assert(!seqstk_stk_init(NULL), "NULL STACK INIT FAILED");
+   test_assert(seqstk_stk_init(&stk), "STACK INIT FAILED");
    test_assert((stk.top == -1), "STACK INIT: TOP != -1");
    test_assert(seqstk_stk_empty(&stk), "STACK NOT EMPTY AFTER INIT!");
 
    bool is_empty = seqstk_stk_empty(&stk);
+   test_assert(seqstk_stk_empty(NULL), "NULL STK WAS NOT EMPTY");
    test_assert((is_empty), "EMPTY TEST FAILED!");
 
    int32_t const * const empty_ret = seqstk_stk_peek(&stk);
@@ -176,6 +193,7 @@ test_return_type stack_test()
    const int32_t four = 4;
    const int32_t five = 5;
    const int32_t six  = 6;
+   test_assert(!seqstk_stk_push(NULL, four), "NULL PUSH FAILED!");
    test_assert(seqstk_stk_push(&stk, four), "PUSH FAILED!");
    test_assert(seqstk_stk_push(&stk, five), "PUSH FAILED!");
    test_assert(seqstk_stk_push(&stk, six), "PUSH FAILED!");

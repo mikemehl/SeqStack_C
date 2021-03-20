@@ -16,7 +16,7 @@ typedef struct
 
 
 // Initialize the stack (set top to empty.)
-void seqstk_stk_init(VM_Stack * const stk);
+bool seqstk_stk_init(VM_Stack * const stk);
 
 // Push a value on to the stack. Returns true on success, false otherwise.
 bool seqstk_stk_push(VM_Stack * const stk, int32_t val);
