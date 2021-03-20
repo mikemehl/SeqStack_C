@@ -1,11 +1,14 @@
 #include <math.h>
 #include "seqstk_stack.h"
 #include "seqstk_fixed.h"
+#include "seqstk.h"
 #include "test.h"
 
 
 test_return_type stack_test();
 test_return_type arithmetic_test();
+test_return_type vm_init_tests();
+test_return_type stack_op_tests();
 
 int main(void)
 {
@@ -14,9 +17,43 @@ int main(void)
    // Ok....test here lol.
    test_run(arithmetic_test);
    test_run(stack_test);
+   test_run(vm_init_tests);
+   test_run(stack_op_tests);
 
    printf("%s\n", "ALL TESTS PASSED");
    return 0;
+}
+
+test_return_type vm_init_tests()
+{
+   SeqStkVm vm;
+   static char msg[256];
+
+   // Initialize the vm.
+   seqstk_init(&vm);
+   test_assert(vm.pc == 0, "PC NOT INITIALIZED TO 0");
+   test_assert(seqstk_stk_empty(&vm.call_stack), "CALL STACK NOT EMPTIED");
+   test_assert(seqstk_stk_empty(&vm.data_stack), "CALL STACK NOT EMPTIED");
+   for(int i=0; i<NUM_PORTS; i++)
+   {
+      sprintf(msg, "PORT %d NOT EMPTIED", i);
+      test_assert(seqstk_stk_empty(&vm.ports[i]), msg);
+   }
+   for(int i=0; i<NUM_INTERRUPTS; i++)
+   {
+      sprintf(msg, "INTERRUPT %d NOT INVALID", i);
+      test_assert(vm.interrupts[i] == INVALID_INTERRUPT, msg);
+   }
+   
+   return_test_success;
+}
+
+test_return_type stack_op_tests()
+{
+
+   // TODO
+
+   return_test_success;
 }
 
 test_return_type arithmetic_test()

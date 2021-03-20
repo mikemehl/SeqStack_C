@@ -4,8 +4,9 @@
 #include "seqstk_stack.h"
 
 #define NUM_PORTS 8
-#define RAM_SIZE 1 << 16
+#define RAM_SIZE 1 << 15
 #define NUM_INTERRUPTS NUM_PORTS 
+#define INVALID_INTERRUPT -1
 
 typedef struct SeqStkVm
 {
@@ -14,7 +15,9 @@ typedef struct SeqStkVm
     VM_Stack call_stack;
     VM_Stack data_stack;
     VM_Stack ports[NUM_PORTS];
-    int      interrupts[NUM_INTERRUPTS];
+    int32_t      interrupts[NUM_INTERRUPTS];
 } SeqStkVm;
+
+void seqstk_init(SeqStkVm * const vm);
 
 #endif
