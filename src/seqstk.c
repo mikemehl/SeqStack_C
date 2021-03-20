@@ -9,6 +9,7 @@ const uint8_t PORT_MASK     = 0b00000111;
 
 static bool seqstk_cycle_stack_op(SeqStkVm * const vm, const uint8_t next_inst);
 static bool seqstk_push_imm(SeqStkVm * const vm);
+static bool seqstk_push_index_stack(SeqStkVm * const vm);
 static bool seqstk_push_index_imm(SeqStkVm * const vm);
 
 bool seqstk_init(SeqStkVm * const vm)
@@ -62,6 +63,8 @@ static bool seqstk_cycle_stack_op(SeqStkVm * const vm, const uint8_t next_inst)
         if(addr_mode == ADDR_IMM)
             return seqstk_push_imm(vm);
         else if(addr_mode == ADDR_INDEX_STACK)
+            return seqstk_push_index_stack(vm);
+        else if (addr_mode == ADDR_INDEX_IMM)
             return seqstk_push_index_imm(vm);
     } 
     return false;
@@ -78,7 +81,7 @@ static bool seqstk_push_imm(SeqStkVm * const vm)
     return false;
 }
 
-static bool seqstk_push_index_imm(SeqStkVm * const vm)
+static bool seqstk_push_index_stack(SeqStkVm * const vm)
 {
     if(vm->pc + 4 < RAM_SIZE)
     {
@@ -88,6 +91,22 @@ static bool seqstk_push_index_imm(SeqStkVm * const vm)
         *offset >>= 16;
         const int16_t addr = *((int16_t * const)&vm->ram[vm->pc]) + *offset;
         bool success = seqstk_stk_push(&vm->data_stack, *((int32_t * const)&vm->ram[addr]));
+        vm->pc += sizeof(int16_t);
+        return success;
+    }
+    return false;
+
+}
+
+static bool seqstk_push_index_imm(SeqStkVm * const vm)
+{
+    if(vm->pc + 2 < RAM_SIZE)
+    {
+        int16_t const * const offset = (int16_t * const)&vm->ram[vm->pc];
+        int32_t * const addr = seqstk_stk_pop(&vm->data_stack);
+        *addr >>= 16;
+        *addr += *offset;
+        bool success = seqstk_stk_push(&vm->data_stack, *((int32_t * const)&vm->ram[*addr]));
         vm->pc += sizeof(int16_t);
         return success;
     }
