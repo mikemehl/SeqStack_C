@@ -2,7 +2,7 @@
 
 ## Memory and Number Encoding
 
-Memory is 2^15, byte addressable.
+Memory is 2^15 bytes, byte addressable.
 
 All values are two's complement 16.16 bit fixed point. When an instruction utilizes the stack for adresses, the fractional portion (the bottom 16 bits) are ignored.
 

@@ -1,6 +1,7 @@
 #include <math.h>
 #include "seqstk_stack.h"
 #include "seqstk_fixed.h"
+#include "seqstk_opcodes.h"
 #include "seqstk.h"
 #include "test.h"
 
@@ -56,6 +57,7 @@ test_return_type vm_init_tests()
    test_assert(!seqstk_load_program(NULL, code, RAM_SIZE), "NULL VM INIT FAILED");
    test_assert(!seqstk_load_program(&vm, code, 0), "0 SIZE INIT FAILED");
    test_assert(!seqstk_load_program(&vm, code, -666), "NEGATIVE SIZE INIT FAILED");
+   test_assert(!seqstk_load_program(&vm, code, (RAM_SIZE + 1)), "OVERSIZED INIT FAILED");
    
    return_test_success;
 }
@@ -66,7 +68,14 @@ test_return_type stack_op_tests()
    SeqStkVm vm;
    test_assert(seqstk_init(&vm), "Init failed????");
 
-   // TODO: Try loading in some code with the different stack opcodes..did it work?
+   char code[RAM_SIZE] = {0};
+   code[0] = PUSH_IMM;
+   *((int32_t * const) &code[1]) = seqstk_float_to_fixed(1234.5678);
+   test_assert(seqstk_load_program(&vm, code, 5), "UNABLE TO LOAD TEST PROGRAM FOR PUSH");
+   test_assert(seqstk_cycle(&vm), "PUSH IMM FAILED");
+   test_assert(*seqstk_stk_peek(&vm.data_stack) == *((int32_t * const)&code[1]), "WRONG VALUE ON DATA STACK");
+   // TODO: The rest.
+
 
    return_test_success;
 }
