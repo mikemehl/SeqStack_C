@@ -9,7 +9,7 @@
 test_return_type stack_test();
 test_return_type arithmetic_test();
 test_return_type vm_init_tests();
-test_return_type stack_op_tests();
+test_return_type stack_push_op_tests();
 
 int main(void)
 {
@@ -18,7 +18,7 @@ int main(void)
    test_run(arithmetic_test);
    test_run(stack_test);
    test_run(vm_init_tests);
-   test_run(stack_op_tests);
+   test_run(stack_push_op_tests);
 
    printf("%s\n", "ALL TESTS PASSED");
    return 0;
@@ -61,7 +61,7 @@ test_return_type vm_init_tests()
    return_test_success;
 }
 
-test_return_type stack_op_tests()
+test_return_type stack_push_op_tests()
 {
    //static char code[RAM_SIZE];
    SeqStkVm vm;
@@ -109,6 +109,16 @@ test_return_type stack_op_tests()
    test_assert(*seqstk_stk_peek(&vm.data_stack) == test_val, "WRONG VALUE ON DATA STACK AFTER PUSH INDEX IMMEDIATE");
    seqstk_stk_pop(&vm.data_stack);
    test_assert(seqstk_stk_empty(&vm.data_stack), "PUSH INDEX IMMEDIATE FAILED TO REMOVE ADDR FROM STACK");
+
+   seqstk_init(&vm);
+   code[0] = PUSH_STACK; 
+   *((int32_t * const) &code[4]) = test_val; 
+   seqstk_stk_push(&vm.data_stack, seqstk_float_to_fixed(4.0));
+   test_assert(seqstk_load_program(&vm, code, RAM_SIZE), "LOAD PROGRAM FAILED FOR PUSH STACK");
+   test_assert(seqstk_cycle(&vm), "PUSH STACK FAILED");
+   test_assert(*seqstk_stk_peek(&vm.data_stack) == test_val, "WRONG VALUE ON DATA STACK AFTER PUSH STACK");
+   seqstk_stk_pop(&vm.data_stack);
+   test_assert(seqstk_stk_empty(&vm.data_stack), "PUSH STACK FAILED TO REMOVE ADDR FROM STACK");
 
    return_test_success;
 }

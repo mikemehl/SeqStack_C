@@ -9,7 +9,8 @@ typedef enum SeqStkOp
 {
    PUSH_IMM         = 0b11111111,
    PUSH_INDEX_STACK = 0b11111110,
-   PUSH_INDEX_IMMEDIATE = 0b11111101
+   PUSH_INDEX_IMMEDIATE = 0b11111101,
+   PUSH_STACK = 0b11111100
 } SeqStkOp;
 
 typedef enum SeqStkOpGroup
@@ -21,7 +22,8 @@ typedef enum SeqStkAddrMode
 {
    ADDR_IMM = 0b00000011,
    ADDR_INDEX_STACK = 0b00000010,
-   ADDR_INDEX_IMM = 0b00000001
+   ADDR_INDEX_IMM = 0b00000001,
+   ADDR_STACK = 0b00000000
 } SeqStkAddrMode;
 
 #endif

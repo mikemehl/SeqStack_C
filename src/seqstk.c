@@ -11,6 +11,7 @@ static bool seqstk_cycle_stack_op(SeqStkVm * const vm, const uint8_t next_inst);
 static bool seqstk_push_imm(SeqStkVm * const vm);
 static bool seqstk_push_index_stack(SeqStkVm * const vm);
 static bool seqstk_push_index_imm(SeqStkVm * const vm);
+static bool seqstk_push_stack(SeqStkVm * const vm);
 
 bool seqstk_init(SeqStkVm * const vm)
 {
@@ -66,6 +67,8 @@ static bool seqstk_cycle_stack_op(SeqStkVm * const vm, const uint8_t next_inst)
             return seqstk_push_index_stack(vm);
         else if (addr_mode == ADDR_INDEX_IMM)
             return seqstk_push_index_imm(vm);
+        else if (addr_mode == ADDR_STACK)
+            return seqstk_push_stack(vm);
     } 
     return false;
 }
@@ -104,6 +107,8 @@ static bool seqstk_push_index_imm(SeqStkVm * const vm)
     {
         int16_t const * const offset = (int16_t * const)&vm->ram[vm->pc];
         int32_t * const addr = seqstk_stk_pop(&vm->data_stack);
+        if(!addr)
+            return false;
         *addr >>= 16;
         *addr += *offset;
         bool success = seqstk_stk_push(&vm->data_stack, *((int32_t * const)&vm->ram[*addr]));
@@ -112,4 +117,15 @@ static bool seqstk_push_index_imm(SeqStkVm * const vm)
     }
     return false;
 
+}
+
+static bool seqstk_push_stack(SeqStkVm * const vm)
+{
+    int32_t * const addr = seqstk_stk_pop(&vm->data_stack);
+    if(addr)
+    {
+        *addr >>= 16;
+        return seqstk_stk_push(&vm->data_stack, *((int32_t * const)&vm->ram[*addr]));
+    }
+    return false;
 }
