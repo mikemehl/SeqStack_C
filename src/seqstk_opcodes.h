@@ -10,7 +10,8 @@ typedef enum SeqStkOp
    PUSH_IMM         = 0b11111111,
    PUSH_INDEX_STACK = 0b11111110,
    PUSH_INDEX_IMMEDIATE = 0b11111101,
-   PUSH_STACK = 0b11111100
+   PUSH_STACK = 0b11111100,
+   POP = 0b11111000
 } SeqStkOp;
 
 typedef enum SeqStkOpGroup

@@ -24,7 +24,7 @@ Where supported, addressing modes are represented by two bits in the instruction
 * 111 - Stack Manipulation
   * Adressing Modes: Immediate, Index Stack, Index Immediate, Stack. Stack treats the top of the stack as a memory address (ignores fractional portion).
     * 111 - Push
-    * 000 - Pull: Top value of stack is treated as a memory address (ignores fractional portion) for non-immediate modes. Value written is the next value on the stack.
+    * 000 - Store
   * Adressing Modes: Stack.
     * 110 - Pop
     * 101 - Drop
@@ -32,8 +32,6 @@ Where supported, addressing modes are represented by two bits in the instruction
     * 011 - Rot
     * 010 - MovToRts
     * 001 - MovFromRts
-  * Adressing Modes: Immediate, Index Stack, Index Immediate, Stack.
-    * 000 - Store
 * 110 - Arithmetic
   * Adressing Modes: Stack only.
     * 11 - Add

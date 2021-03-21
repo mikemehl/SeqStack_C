@@ -10,6 +10,7 @@ test_return_type stack_test();
 test_return_type arithmetic_test();
 test_return_type vm_init_tests();
 test_return_type stack_push_op_tests();
+test_return_type stack_pop_op_tests();
 
 int main(void)
 {
@@ -19,6 +20,7 @@ int main(void)
    test_run(stack_test);
    test_run(vm_init_tests);
    test_run(stack_push_op_tests);
+   test_run(stack_pop_op_tests);
 
    printf("%s\n", "ALL TESTS PASSED");
    return 0;
@@ -119,6 +121,28 @@ test_return_type stack_push_op_tests()
    test_assert(*seqstk_stk_peek(&vm.data_stack) == test_val, "WRONG VALUE ON DATA STACK AFTER PUSH STACK");
    seqstk_stk_pop(&vm.data_stack);
    test_assert(seqstk_stk_empty(&vm.data_stack), "PUSH STACK FAILED TO REMOVE ADDR FROM STACK");
+
+   return_test_success;
+}
+
+test_return_type stack_pop_op_tests()
+{
+   SeqStkVm vm;
+   test_assert(seqstk_init(&vm), "Init failed before pop tests????");
+
+   char code[RAM_SIZE];
+   code[0] = POP;
+   // Test that it fails with an empty stack.
+   seqstk_load_program(&vm, code, RAM_SIZE);
+   test_assert(!seqstk_cycle(&vm), "POP SUCCEEDED WITH AN EMPTY STACK");
+   test_assert(seqstk_stk_empty(&vm.data_stack), "FAILED POP BUT STACK IS NOT EMPTY???");
+   // Test that it succeeds with a value on the stack.
+   const int32_t test_val = seqstk_float_to_fixed(666.0);
+   seqstk_init(&vm);
+   seqstk_load_program(&vm, code, RAM_SIZE);
+   seqstk_stk_push(&vm.data_stack, test_val);
+   test_assert(seqstk_cycle(&vm), "POP FAILED");
+   test_assert(seqstk_stk_empty(&vm.data_stack), "STACK NOT EMPTY AFTER POP");
 
    return_test_success;
 }
